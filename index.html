@@ -403,26 +403,31 @@
       .container{width:min(var(--max),calc(100% - 22px))}
       .navbar{top:10px;padding:0 10px}
       .nav-inner{padding:8px 10px 8px 14px;border-radius:24px}
-      .mobile-toggle{display:grid;place-items:center}
+      .nav-inner{position:relative}
+      .mobile-toggle{display:grid;place-items:center;position:relative;z-index:1001}
       .nav-links{
         position:fixed;top:0;left:0;right:0;bottom:0;
-        background:rgba(255,255,255,.96);
+        background:rgba(255,255,255,.98);
+        -webkit-backdrop-filter:blur(28px);
         backdrop-filter:blur(28px);
-        flex-direction:column;align-items:stretch;
-        padding:90px 22px 40px;gap:6px;
+        flex-direction:column;align-items:stretch;justify-content:flex-start;
+        padding:calc(86px + env(safe-area-inset-top)) 22px calc(32px + env(safe-area-inset-bottom));gap:6px;
+        overflow-y:auto;overscroll-behavior:contain;
         opacity:0;visibility:hidden;transform:translateY(-16px);
-        transition:.3s;z-index:998;border-radius:0
+        transition:opacity .25s ease,transform .25s ease,visibility .25s ease;
+        z-index:999;border-radius:0
       }
       .nav-links.open{opacity:1;visibility:visible;transform:none;display:flex}
-      .nav-link{padding:16px 18px;font-size:16px;border-radius:16px;text-align:center}
-      .nav-auth{flex-direction:column;margin:12px 0 0;padding-top:14px;border-top:1px solid var(--line);gap:10px}
+      .nav-link{display:block;width:100%;padding:14px 18px;font-size:16px;border-radius:16px;text-align:center}
+      .nav-auth{width:100%;flex-direction:column;margin:12px 0 0;padding-top:14px;border-top:1px solid var(--line);gap:10px}
+      .nav-auth .nav-link{width:min(100%,320px);margin-inline:auto}
       .nav-auth .auth-register{text-align:center;padding:14px}
       .brand span:last-child{font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
       .hero{padding:120px 0 60px;min-height:auto}
       .hero-title{font-size:32px}
       .hero-text{font-size:15px}
-      .hero-stats{flex-direction:column;align-items:stretch;max-width:280px}
-      .stat-card{min-width:0}
+      .hero-stats{flex-direction:column;align-items:center;max-width:280px;width:100%;margin-inline:auto}
+      .stat-card{min-width:0;width:100%;text-align:center}
       .section{padding:64px 0}
       .section-heading{margin-bottom:32px}
       .section-heading h2{font-size:26px}
