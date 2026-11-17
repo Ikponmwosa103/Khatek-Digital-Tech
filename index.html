@@ -404,23 +404,33 @@
       .navbar{top:10px;padding:0 10px}
       .nav-inner{padding:8px 10px 8px 14px;border-radius:24px}
       .nav-inner{position:relative}
-      .mobile-toggle{display:grid;place-items:center;position:relative;z-index:1001}
+      .mobile-toggle{display:grid;place-items:center;position:relative;z-index:1003}
+      .nav-backdrop{
+        position:fixed;inset:0;background:rgba(8,15,30,.48);
+        -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+        opacity:0;visibility:hidden;pointer-events:none;
+        transition:opacity .28s ease,visibility .28s ease;z-index:1000
+      }
+      .nav-backdrop.open{opacity:1;visibility:visible;pointer-events:auto}
       .nav-links{
-        position:fixed;top:0;left:0;right:0;bottom:0;
+        position:fixed;top:0;right:0;left:auto;bottom:0;
+        width:min(86vw,380px);height:100vh;height:100dvh;
         background:rgba(255,255,255,.98);
         -webkit-backdrop-filter:blur(28px);
         backdrop-filter:blur(28px);
         flex-direction:column;align-items:stretch;justify-content:flex-start;
-        padding:calc(86px + env(safe-area-inset-top)) 22px calc(32px + env(safe-area-inset-bottom));gap:6px;
+        padding:calc(88px + env(safe-area-inset-top)) 22px calc(30px + env(safe-area-inset-bottom));gap:7px;
         overflow-y:auto;overscroll-behavior:contain;
-        opacity:0;visibility:hidden;transform:translateY(-16px);
-        transition:opacity .25s ease,transform .25s ease,visibility .25s ease;
-        z-index:999;border-radius:0
+        box-shadow:-18px 0 55px rgba(15,23,42,.18);
+        opacity:0;visibility:hidden;transform:translateX(105%);
+        transition:transform .32s cubic-bezier(.22,.8,.25,1),opacity .25s ease,visibility .25s ease;
+        z-index:1001;border-radius:0 0 0 24px
       }
-      .nav-links.open{opacity:1;visibility:visible;transform:none;display:flex}
-      .nav-link{display:block;width:100%;padding:14px 18px;font-size:16px;border-radius:16px;text-align:center}
-      .nav-auth{width:100%;flex-direction:column;margin:12px 0 0;padding-top:14px;border-top:1px solid var(--line);gap:10px}
-      .nav-auth .nav-link{width:min(100%,320px);margin-inline:auto}
+      .nav-links.open{opacity:1;visibility:visible;transform:translateX(0);display:flex}
+      .nav-link{display:block;width:100%;padding:14px 18px;font-size:16px;border-radius:14px;text-align:left}
+      .nav-link:hover,.nav-link.active{background:rgba(37,99,235,.09)}
+      .nav-auth{width:100%;flex-direction:column;margin:16px 0 0;padding-top:18px;border-top:1px solid var(--line);gap:10px}
+      .nav-auth .nav-link{width:100%;text-align:center}
       .nav-auth .auth-register{text-align:center;padding:14px}
       .brand span:last-child{font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
       .hero{padding:120px 0 60px;min-height:auto}
@@ -472,9 +482,10 @@
         </span>
         <span>Khatek Digital Tech</span>
       </a>
-      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false">
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
         <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
+      <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
       <ul class="nav-links" id="navLinks">
         <li><a class="nav-link active" href="#home">Home</a></li>
         <li><a class="nav-link" href="#about">About</a></li>
@@ -484,7 +495,7 @@
         <li><a class="nav-link" href="#contact">Contact</a></li>
         <li class="nav-auth">
           <a class="nav-link" href="./auth.html">Login</a>
-          <a class="nav-link auth-register" href="./auth.html?mode=register">Register</a>
+          <a class="nav-link auth-register" href="./auth.html?mode=register">Sign Up</a>
         </li>
       </ul>
     </div>
@@ -754,6 +765,7 @@
     const navbar=document.getElementById("navbar");
     const mobileToggle=document.getElementById("mobileToggle");
     const navLinks=document.getElementById("navLinks");
+    const navBackdrop=document.getElementById("navBackdrop");
     const links=[...document.querySelectorAll(".nav-link")];
     const revealElements=document.querySelectorAll(".reveal");
     const backToTop=document.getElementById("backToTop");
@@ -764,14 +776,19 @@
 
     function setMenu(open){
       navLinks.classList.toggle("open",open);
+      navBackdrop.classList.toggle("open",open);
       mobileToggle.setAttribute("aria-expanded",String(open));
+      mobileToggle.setAttribute("aria-label",open?"Close menu":"Open menu");
       mobileToggle.innerHTML=open
         ? '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'
         : '<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
       document.body.style.overflow=open?"hidden":"";
     }
     mobileToggle.addEventListener("click",()=>setMenu(!navLinks.classList.contains("open")));
+    navBackdrop.addEventListener("click",()=>setMenu(false));
+    document.addEventListener("keydown",event=>{if(event.key==="Escape")setMenu(false)});
     links.forEach(l=>l.addEventListener("click",()=>setMenu(false)));
+    window.addEventListener("resize",()=>{if(window.innerWidth>768)setMenu(false)});
 
     function handleScroll(){
       navbar.classList.toggle("scrolled",window.scrollY>20);
