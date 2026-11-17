@@ -450,7 +450,7 @@
 <script>
   /* =========================================================
      KHATEK DIGITAL TECH — AUTH SYSTEM
-     PHP + MYSQL VERSION
+     PHP API + AIVEN MYSQL BACKEND
   ========================================================= */
 
 
@@ -919,7 +919,7 @@
 
   /* =========================================================
      LOGIN FORM
-     PHP + MYSQL
+     PHP API + AIVEN MYSQL
   ========================================================= */
 
   const loginForm =
@@ -994,7 +994,7 @@
 
           const response =
             await fetch(
-              "./Api/login.php",
+              "/Api/login.php",
               {
                 method: "POST",
 
@@ -1164,11 +1164,7 @@
           /* Redirect */
 
           setTimeout(() => {
-
-           setTimeout(() => {
-    window.location.href = "./account-index.html";
-}, 1300);
-
+            window.location.href = "./account-index.html";
           }, 1300);
 
 
@@ -1182,7 +1178,7 @@
 
           showTemporaryNotification(
             "Connection error",
-            "Unable to connect to the server. Make sure XAMPP Apache and MySQL are running.",
+            "Khatek's server could not be reached. Please check your internet connection and try again.",
             "error",
             "!"
           );
@@ -1190,7 +1186,7 @@
 
           showMsg(
             message,
-            "Unable to connect to the server. Make sure XAMPP Apache and MySQL are running.",
+            "Khatek's server could not be reached. Please check your internet connection and try again.",
             "error"
           );
 
@@ -1216,7 +1212,7 @@
 
   /* =========================================================
      REGISTER FORM
-     PHP + MYSQL
+     PHP API + AIVEN MYSQL
   ========================================================= */
 
   const registerForm =
@@ -1449,7 +1445,7 @@
 
           const response =
             await fetch(
-              "./Api/register.php",
+              "/Api/register.php",
               {
                 method: "POST",
 
@@ -1633,7 +1629,7 @@
 
           showTemporaryNotification(
             "Connection error",
-            "Unable to connect to the server. Make sure XAMPP Apache and MySQL are running.",
+            "Khatek's server could not be reached. Please check your internet connection and try again.",
             "error",
             "!"
           );
@@ -1641,7 +1637,7 @@
 
           showMsg(
             message,
-            "Unable to connect to the server. Make sure XAMPP Apache and MySQL are running.",
+            "Khatek's server could not be reached. Please check your internet connection and try again.",
             "error"
           );
 
