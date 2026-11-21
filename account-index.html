@@ -687,19 +687,9 @@
       .navbar{top:10px;padding:0 10px}
       .nav-inner{padding:8px 10px 8px 14px;border-radius:24px}
       .mobile-toggle{display:grid;place-items:center}
-      .nav-links{
-        position:fixed;top:0;left:0;right:0;bottom:0;
-        background:rgba(255,255,255,.96);
-        backdrop-filter:blur(28px);
-        flex-direction:column;align-items:stretch;
-        padding:90px 22px 40px;gap:6px;
-        opacity:0;visibility:hidden;transform:translateY(-16px);
-        transition:.3s;z-index:998;border-radius:0
-      }
-      .nav-links.open{opacity:1;visibility:visible;transform:none;display:flex}
-      .nav-link{padding:16px 18px;font-size:16px;border-radius:16px;text-align:center}
-      .nav-auth{flex-direction:column;margin:12px 0 0;padding-top:14px;border-top:1px solid var(--line);gap:10px}
-      .nav-auth .auth-register{text-align:center;padding:14px}
+      .nav-links{display:none}
+      .mobile-toggle{display:grid;place-items:center}
+      .brand span:last-child{font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
       .brand span:last-child{font-size:13px;max-width:140px;overflow:hidden;text-overflow:ellipsis}
       .hero{padding:120px 0 60px;min-height:auto}
       .hero-title{font-size:32px}
@@ -774,15 +764,22 @@
 
     .account-sidebar{
       position:fixed;top:0;right:0;bottom:0;z-index:1999;
-      width:min(390px,calc(100% - 24px));
-      background:rgba(255,255,255,.94);
+      width:min(430px,92vw);
+      background:rgba(255,255,255,.97);
       backdrop-filter:blur(28px) saturate(180%);
       -webkit-backdrop-filter:blur(28px) saturate(180%);
       border-left:1px solid rgba(255,255,255,.8);
       box-shadow:-20px 0 70px rgba(15,23,42,.18);
       transform:translateX(105%);transition:transform .35s ease;
-      display:flex;flex-direction:column
+      display:flex;flex-direction:column;overflow:hidden
     }
+    .drawer-navigation{padding:16px 20px 18px;border-bottom:1px solid var(--line)}
+    .drawer-section-label{display:block;margin:0 0 10px 4px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .drawer-nav-links{display:grid;grid-template-columns:1fr 1fr;gap:7px;list-style:none}
+    .drawer-nav-links a{display:flex;align-items:center;min-height:42px;padding:9px 12px;border-radius:12px;background:#f8fafc;color:var(--ink);font-size:13px;font-weight:700;transition:.2s}
+    .drawer-nav-links a:hover,.drawer-nav-links a:focus-visible{background:#eff6ff;color:var(--blue);outline:none}
+    .account-sidebar-body{padding:18px 20px;overflow-y:auto;flex:1}
+    @media(max-width:768px){.account-sidebar{width:min(430px,92vw)}.account-sidebar-head{padding:18px 18px}.drawer-navigation{padding:14px 18px}.account-sidebar-body{padding:18px}}
     .account-sidebar.show{transform:translateX(0)}
 
     .account-sidebar-head{
@@ -876,9 +873,21 @@
 
   <aside class="account-sidebar" id="accountSidebar" aria-hidden="true">
     <div class="account-sidebar-head">
-      <h2>Your Account</h2>
-      <button class="account-close" id="accountClose" type="button" aria-label="Close account menu">×</button>
+      <h2>Menu &amp; Account</h2>
+      <button class="account-close" id="accountClose" type="button" aria-label="Close menu">×</button>
     </div>
+
+    <nav class="drawer-navigation" aria-label="Main navigation">
+      <span class="drawer-section-label">Explore Khatek</span>
+      <ul class="drawer-nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="./kids-coding.html">Bootcamp</a></li>
+        <li><a href="#programs">Programs</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
 
     <div class="account-sidebar-body">
       <div class="account-user-card">
@@ -1238,15 +1247,16 @@
     document.getElementById("year").textContent=new Date().getFullYear();
 
     function setMenu(open){
-      navLinks.classList.toggle("open",open);
+      if(open) openAccount();
+      else closeAccount();
       mobileToggle.setAttribute("aria-expanded",String(open));
-      mobileToggle.innerHTML=open
-        ? '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'
-        : '<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
-      document.body.style.overflow=open?"hidden":"";
+      mobileToggle.setAttribute("aria-label",open?"Close menu":"Open menu");
     }
-    mobileToggle.addEventListener("click",()=>setMenu(!navLinks.classList.contains("open")));
+    mobileToggle.addEventListener("click",()=>setMenu(accountSidebar.classList.contains("show")?false:true));
     links.forEach(l=>l.addEventListener("click",()=>setMenu(false)));
+    document.querySelectorAll(".drawer-nav-links a").forEach(link=>{
+      link.addEventListener("click",closeAccount);
+    });
 
     function handleScroll(){
       navbar.classList.toggle("scrolled",window.scrollY>20);
@@ -1307,6 +1317,8 @@
       accountOverlay.classList.add("show");
       accountSidebar.setAttribute("aria-hidden","false");
       accountProfileBtn.setAttribute("aria-expanded","true");
+      mobileToggle.setAttribute("aria-expanded","true");
+      mobileToggle.setAttribute("aria-label","Close menu");
       document.body.style.overflow="hidden";
     }
 
@@ -1315,6 +1327,8 @@
       accountOverlay.classList.remove("show");
       accountSidebar.setAttribute("aria-hidden","true");
       accountProfileBtn.setAttribute("aria-expanded","false");
+      mobileToggle.setAttribute("aria-expanded","false");
+      mobileToggle.setAttribute("aria-label","Open menu");
       document.body.style.overflow="";
     }
 
